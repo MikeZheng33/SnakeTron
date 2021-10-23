@@ -21,3 +21,7 @@ class Agent:
     
     def setPosition(self, value):
         self.position = value
+
+    def move(self, delta_x, delta_y):
+        self.position[0] += delta_x
+        self.position[1] += delta_y
