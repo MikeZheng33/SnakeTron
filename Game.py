@@ -3,7 +3,7 @@ import sys
 import pygame
 from pygame.locals import *
 
-import Agent
+from Entities import Entity, Agent
 
 FPS = 60
 FramePerSec = pygame.time.Clock()
@@ -17,20 +17,27 @@ DISPLAYSURF.fill(BLACK)
 pygame.display.set_caption("SnakeTron")
 
 
-class Game:
+def main():
     game_board = [[0 for x in range(20)] for y in range(20)]  # 20 by 20 array
-    agents = []
+    entities: list[Entity] = []
     pygame.init()
     while True:
-        for agent in agents:
-            for position in agent.getPosition():
-
-
+        for entity in entities:
+            if isinstance(entity, Agent):
+                move(entity)
+            for position in entity.get_position():
+                game_board[position[0]][position[1]] = entity.id
 
         pygame.display.update()
         for event in pygame.event.get():
             if event.type == QUIT:
                 pygame.quit()
                 sys.exit()
-def handle_collision(agent1 : Agent, agent2 : Agent) -> bool:
-    
+
+
+def move(agent : Agent) -> str:
+    pass
+
+
+if __name__ == '__main__':
+  main()
