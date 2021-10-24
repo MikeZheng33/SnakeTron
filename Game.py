@@ -39,7 +39,6 @@ def main():
             if event.type == QUIT:
                 return
 
-        game_board = [[' ' for x in range(BOARD_HEIGHT)] for y in range(BOARD_WIDTH)]
         for entity in entities:
             if isinstance(entity, Agent):
                 moved: str = entity.move(game_board)
@@ -47,12 +46,14 @@ def main():
                     apple_invalid = True
                 elif moved == 'lose':
                     return
-            for position in entity.get_positions():
-                game_board[position[0]][position[1]] = entity.get_id()
 
+        game_board = [[' ' for x in range(BOARD_HEIGHT)] for y in range(BOARD_WIDTH)]
         # if apple_invalid:
         #     pass
         game_board[apple_pos[0]][apple_pos[1]] = '+'
+        for entity in entities:
+            for position in entity.get_positions():
+                game_board[position[0]][position[1]] = entity.get_id()
 
         draw_board(surface, game_board)
 

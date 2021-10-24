@@ -56,6 +56,8 @@ class Player(Agent):
             new_head = head[0] + 1, head[1]
 
         self._positions.append(new_head)
+        if new_head[0] < 0 or new_head[0] >= len(game_board) or new_head[1] < 0 or new_head[1] >= len(game_board[0]):
+            return 'lose'
         if game_board[new_head[0]][new_head[1]] != '+':
             self._positions.pop(0)
 
