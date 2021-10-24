@@ -3,7 +3,7 @@ import random
 import pygame
 from pygame.locals import *
 
-from Entities import Entity, Agent, Player
+from Entities import Entity, Agent, Player, AI
 
 BLACK = (0, 0, 0)
 RED = (255, 0, 0)
@@ -27,15 +27,18 @@ def main():
     game_board = [[' ' for x in range(BOARD_HEIGHT)] for y in range(BOARD_WIDTH)]
     entities: list[Entity] = []
 
-    apple_pos = random_position()
-    apple_invalid = False
-    game_board[apple_pos[0]][apple_pos[1]] = '+'
+    apple_invalid = True
+    apple_pos = 0, 0
 
-    player_pos = random_position()
+    player_pos = 4, 4
     entities.append(Player('1', [player_pos]))
     game_board[player_pos[0]][player_pos[1]] = '1'
-    frame_count: int = 0
 
+    ai_pos = 14, 14
+    entities.append(AI('2', [ai_pos]))
+    game_board[ai_pos[0]][ai_pos[1]] = '2'
+
+    frame_count: int = 0
 
     while True:
         for event in pygame.event.get():
@@ -71,7 +74,6 @@ def main():
         if frame_count == 15:
             frame_count = 0
         clock.tick(120)
-
 
 
 def random_apple(game_board, range_x=None, range_y=None) -> tuple[int, int]:
