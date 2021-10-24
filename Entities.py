@@ -1,5 +1,10 @@
+import os
+import random
+from collections import Counter
+
 import pygame
 from pygame.locals import *
+import pickle
 
 
 class Entity:
@@ -40,7 +45,7 @@ class Agent(Entity):
         if game_board[new_head[0]][new_head[1]] != '+':
             self._positions.pop(0)
         if game_board[new_head[0]][new_head[1]] in ['1', '2'] and new_head != self._positions[0]:
-            return 'lose'
+            return 'lose' + self._identifier
 
 
 class Player(Agent):
@@ -65,7 +70,56 @@ class Player(Agent):
 
 
 class AI(Agent):
-    def __init__(self, identifier, positions):
+    def __init__(self, identifier, positions, alpha=0, discount=0, epsilon=0):
         super().__init__(identifier, positions)
+        self.__q_table_file_name = 'moby.by'
+        if os.path.exists(self.__q_table_file_name):
+            with open(self.__q_table_file_name, 'rb') as file:
+                self.__q_table = pickle.load(file)
+        else:
+            self.__q_table = {}
+        self.__last_game_board = None
+        self.__last_move = ''
+        self.__legal_moves = ['right']
+        self.__alpha = alpha
+        self.__discount = discount
+        self.__epsilon = epsilon
+
+    def move(self, game_board):
+        if self._direction in ['left', 'right']:
+            self.__legal_moves = ['up', 'down']
+        else:
+            self.__legal_moves = ['left', 'right']
+
+        if game_board not in self.__q_table:
+            self.__q_table = Counter()
+        if self.__last_move != '':
+            self.__q_table[self.__last_game_board][self.__last_move] +=\
+                self.__alpha * (self.__reward(game_board)
+                                + self.__discount * self.__value(game_board)
+                                - self.__q_value(self.__last_game_board, self.__last_move))
+
+        if random.random() < self.__epsilon:
+            move = random.choice(self.__legal_moves)
+        else:
+            max_value = self.__value(game_board)
+            move = random.choice([a for a in self.__legal_moves if self.__q_value(game_board, a) == max_value])
+
+        self.__last_game_board = game_board
+        self.__last_move = move
+
+        self._direction = move
+
+        return super(AI, self).move(game_board)
+
+    def __reward(self, game_board):
+        return 1
+
+    def __value(self, state):
+        return max(self.__q_value(state, action) for action in self.__legal_moves)
+
+    def __q_value(self, state, action):
+        return self.__q_table.get(state, Counter())[action]
+
 
 
