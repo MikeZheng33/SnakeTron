@@ -90,18 +90,20 @@ class AI(Agent):
         self.__epsilon = epsilon
 
     def move(self, game_board):
+        game_board = tuple(tuple(row) for row in game_board)
         if self._direction in ['left', 'right']:
             self.__legal_moves = ['up', 'down']
         else:
             self.__legal_moves = ['left', 'right']
 
-        if game_board not in self.__q_table:
-            self.__q_table = Counter()
-        if self.__last_move != '':
-            self.__q_table[self.__last_game_board][self.__last_move] +=\
-                self.__alpha * (self.__reward(game_board)
-                                + self.__discount * self.__value(game_board)
-                                - self.__q_value(self.__last_game_board, self.__last_move))
+        if self.__last_game_board is not None:
+            if self.__last_game_board not in self.__q_table:
+                self.__q_table[self.__last_game_board] = Counter()
+            if self.__last_move != '':
+                self.__q_table[self.__last_game_board][self.__last_move] += \
+                    self.__alpha * (self.__reward(game_board)
+                                    + self.__discount * self.__value(game_board)
+                                    - self.__q_value(self.__last_game_board, self.__last_move))
 
         if random.random() < self.__epsilon:
             move = random.choice(self.__legal_moves)
@@ -138,4 +140,3 @@ class AI(Agent):
     def __write_q_table_file(self):
         with open(self.__q_table_file_name, 'wb') as file:
             pickle.dump(self.__q_table, file)
-

@@ -112,7 +112,7 @@ def draw_board(surface, game_board):
                 surface.fill(GREEN, pygame.Rect(x * block_width, SCREEN_HEIGHT - y * block_height,
                                                 block_width, block_height))
             elif square == '2':
-                surface.fill(GREEN, pygame.Rect(x * block_width, SCREEN_HEIGHT - y * block_height,
+                surface.fill(BLUE, pygame.Rect(x * block_width, SCREEN_HEIGHT - y * block_height,
                                                 block_width, block_height))
 
 
