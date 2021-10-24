@@ -46,7 +46,7 @@ def main():
                 moved: str = entity.move(game_board)
                 if moved == 'apple':
                     apple_invalid = True
-                elif moved == 'lose':
+                elif 'lose' in moved:
                     return
 
         game_board = [[' ' for x in range(BOARD_HEIGHT)] for y in range(BOARD_WIDTH)]
