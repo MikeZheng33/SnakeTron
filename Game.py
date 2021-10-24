@@ -1,7 +1,7 @@
 import pygame
 from pygame.locals import *
 
-from Entities import Entity, Agent
+from Entities import Entity, Agent, Player
 
 FPS = 60
 FramePerSec = pygame.time.Clock()
@@ -11,26 +11,40 @@ RED = (255, 0, 0)
 GREEN = (0, 255, 0)
 BLUE = (0, 0, 255)
 
+BOARD_WIDTH = 20
+BOARD_HEIGHT = 20
+
 
 def main():
     pygame.init()
     surface = pygame.display.set_mode((600, 600))
     pygame.display.set_caption("SnakeTron")
 
-    game_board = [[' ' for x in range(40)] for y in range(40)]  # 20 by 20 array
+    clock = pygame.time.Clock()
+
+    game_board = [[' ' for x in range(BOARD_HEIGHT)] for y in range(BOARD_WIDTH)]
     entities: list[Entity] = []
+
+    center = (BOARD_WIDTH // 2, BOARD_HEIGHT // 2)
+    entities.append(Player('1', [center]))
+    game_board[center[0]][center[1]] = '1'
 
     while True:
         for event in pygame.event.get():
             if event.type == QUIT:
                 return
 
-        # for entity in entities:
-        #     entities.get_action(game_board) -> {'up', 'down', 'left', 'right'}
+        game_board = [[' ' for x in range(BOARD_HEIGHT)] for y in range(BOARD_WIDTH)]
+        for entity in entities:
+            if isinstance(entity, Agent):
+                entity.move(game_board)
+            for position in entity.get_positions():
+                game_board[position[0]][position[1]] = entity.get_id()
 
         draw_board(surface, game_board)
 
         pygame.display.flip()
+        clock.tick(1)
 
 
 def draw_board(surface, game_board):
@@ -43,9 +57,9 @@ def draw_board(surface, game_board):
                     surface.fill(BLACK, pygame.Rect(i * block_width, j * block_height, block_width, block_height))
                 case '+':
                     surface.fill(RED, pygame.Rect(i * block_width, j * block_height, block_width, block_height))
-                case '1h' | '1b':
+                case '1':
                     surface.fill(GREEN, pygame.Rect(i * block_width, j * block_height, block_width, block_height))
-                case '2h' | '2b':
+                case '2':
                     surface.fill(GREEN, pygame.Rect(i * block_width, j * block_height, block_width, block_height))
 
 

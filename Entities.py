@@ -1,40 +1,56 @@
+import pygame
+from pygame.locals import *
+
+
 class Entity:
-    def __init__(self, position: list[int]):
-        self.position = position
+    def __init__(self, identifier: str, positions: list):
+        self._identifier = identifier
+        self._positions = positions
 
-    def get_position(self):
-        pass
+    def get_id(self):
+        return self._identifier
 
-    def set_position(self, value):
-        self.position = value
+    def get_positions(self):
+        return self._positions
+
+    def set_positions(self, value):
+        self._positions = value
 
 
 class Apple(Entity):
-    def __init__(self, position: list[int]):
-        super().__init__(position)
+    def __init__(self, positions):
+        super().__init__('+', positions)
 
 
 class Agent(Entity):
-    def __init__(self, agent_number: int, position: list[int]):
-        super().__init__(position)
-        self.agent_number = agent_number
+    def __init__(self, identifier: str, positions):
+        super().__init__(identifier, positions)
 
-    def get_agent_number(self):
-        return self.agent_number
-
-    def set_agent_number(self, agent_number):
-        self.agent_number = agent_number
-
-    def move(self, delta_x, delta_y):
-        self.position[0] += delta_x
-        self.position[1] += delta_y
+    def move(self, game_board):
+        pass
 
 
 class Player(Agent):
-    def __init__(self, agent_number, position):
-        super().__init__(agent_number, position)
+    def __init__(self, identifier, positions):
+        super().__init__(identifier, positions)
+
+    def move(self, game_board):
+        keys = pygame.key.get_pressed()
+        head = self._positions[-1]
+        if keys[K_w]:
+            self._positions.append((head[0], head[1] + 1))
+            self._positions.pop(0)
+        elif keys[K_a]:
+            self._positions.append((head[0] - 1, head[1]))
+            self._positions.pop(0)
+        elif keys[K_s]:
+            self._positions.append((head[0], head[1] - 1))
+            self._positions.pop(0)
+        elif keys[K_d]:
+            self._positions.append((head[0] + 1, head[1]))
+            self._positions.pop(0)
 
 
 class AI(Agent):
-    def __init__(self, agent_number, position):
-        super().__init__(agent_number, position)
+    def __init__(self, identifier, positions):
+        super().__init__(identifier, positions)
