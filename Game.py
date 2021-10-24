@@ -73,15 +73,17 @@ def main():
         clock.tick(120)
 
 
+
 def random_apple(game_board, range_x=None, range_y=None) -> tuple[int, int]:
     if range_x is None:
         range_x = range(0, BOARD_WIDTH)
     if range_y is None:
         range_y = range(0, BOARD_HEIGHT)
-        
-    empty_positons = [(x, y) for x in range_x for y in range_y if game_board[x][y]==' ']
-    
+
+    empty_positons = [(x, y) for x in range_x for y in range_y if game_board[x][y] == ' ']
+
     return random.choice(empty_positons)
+
 
 def random_position(range_x=None, range_y=None) -> tuple[int, int]:
     if range_x is None:

@@ -54,21 +54,28 @@ class Agent(Entity):
 class Player(Agent):
     def __init__(self, identifier, positions):
         super().__init__(identifier, positions)
+        self.__movable = True
 
     def move(self, game_board) -> str:
+        self.__movable = True
         return super().move(game_board)
 
     def update_control(self, key):
-        if self._direction in ['left', 'right']:
-            if key == K_w:
-                self._direction = 'up'
-            elif key == K_s:
-                self._direction = 'down'
-        else:
-            if key == K_a:
-                self._direction = 'left'
-            elif key == K_d:
-                self._direction = 'right'
+        if self.__movable:
+            if self._direction in ['left', 'right']:
+                if key == K_w:
+                    self._direction = 'up'
+                    self.__movable = False
+                elif key == K_s:
+                    self._direction = 'down'
+                    self.__movable = False
+            else:
+                if key == K_a:
+                    self._direction = 'left'
+                    self.__movable = False
+                elif key == K_d:
+                    self._direction = 'right'
+                    self.__movable = False
 
 
 class AI(Agent):
