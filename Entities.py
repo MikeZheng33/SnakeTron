@@ -40,28 +40,28 @@ class Agent(Entity):
         if game_board[new_head[0]][new_head[1]] != '+':
             self._positions.pop(0)
         if game_board[new_head[0]][new_head[1]] in ['1', '2'] and new_head != self._positions[0]:
-            return 'lose'
+            return 'lose' + self._identifier
+        return ''
 
 
 class Player(Agent):
     def __init__(self, identifier, positions):
         super().__init__(identifier, positions)
 
-    def move(self, game_board):
-        keys = pygame.key.get_pressed()
+    def move(self, game_board) -> str:
+        return super().move(game_board)
 
+    def update_control(self, key):
         if self._direction in ['left', 'right']:
-            if keys[K_w]:
+            if key == K_w:
                 self._direction = 'up'
-            elif keys[K_s]:
+            elif key == K_s:
                 self._direction = 'down'
         else:
-            if keys[K_a]:
+            if key == K_a:
                 self._direction = 'left'
-            elif keys[K_d]:
+            elif key == K_d:
                 self._direction = 'right'
-
-        return super().move(game_board)
 
 
 class AI(Agent):

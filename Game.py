@@ -33,33 +33,39 @@ def main():
     player_pos = random_position()
     entities.append(Player('1', [player_pos]))
     game_board[player_pos[0]][player_pos[1]] = '1'
-    frame_count: int = 0
+    frame_count = 0
 
     while True:
+        if not frame_count:
+            game_board = [[' ' for x in range(BOARD_HEIGHT)] for y in range(BOARD_WIDTH)]
+            # if apple_invalid:
+            #     pass
+            game_board[apple_pos[0]][apple_pos[1]] = '+'
+            for entity in entities:
+                for position in entity.get_positions():
+                    game_board[position[0]][position[1]] = entity.get_id()
+
+            draw_board(surface, game_board)
+            pygame.display.flip()
+
+            for entity in entities:
+                if isinstance(entity, Agent):
+                    moved: str = entity.move(game_board)
+                    if moved == 'apple':
+                        apple_invalid = True
+                    elif 'lose' in moved:
+                        return
         for event in pygame.event.get():
+            if event.type == pygame.KEYDOWN:
+                for entity in entities:
+                    if isinstance(entity, Player):
+                        entity.update_control(event.key)
             if event.type == QUIT:
                 return
-
-        for entity in entities:
-            if isinstance(entity, Agent):
-                moved: str = entity.move(game_board)
-                if moved == 'apple':
-                    apple_invalid = True
-                elif moved == 'lose':
-                    return
-
-        game_board = [[' ' for x in range(BOARD_HEIGHT)] for y in range(BOARD_WIDTH)]
-        # if apple_invalid:
-        #     pass
-        game_board[apple_pos[0]][apple_pos[1]] = '+'
-        for entity in entities:
-            for position in entity.get_positions():
-                game_board[position[0]][position[1]] = entity.get_id()
-
-        draw_board(surface, game_board)
-
-        pygame.display.flip()
-        clock.tick(5)
+        frame_count += 1
+        if frame_count == 15:
+            frame_count = 0
+        clock.tick(120)
 
 
 def random_position(range_x=None, range_y=None) -> tuple[int, int]:
@@ -75,17 +81,19 @@ def draw_board(surface, game_board):
     block_height = surface.get_height() // len(game_board[0])
     for i, row in enumerate(game_board):
         for j, square in enumerate(row):
+            x = i
+            y = j + 1
             if square == ' ':
-                surface.fill(BLACK, pygame.Rect(i * block_width, SCREEN_HEIGHT - j * block_height,
+                surface.fill(BLACK, pygame.Rect(x * block_width, SCREEN_HEIGHT - y * block_height,
                                                 block_width, block_height))
             elif square == '+':
-                surface.fill(RED, pygame.Rect(i * block_width, SCREEN_HEIGHT - j * block_height,
+                surface.fill(RED, pygame.Rect(x * block_width, SCREEN_HEIGHT - y * block_height,
                                               block_width, block_height))
             elif square == '1':
-                surface.fill(GREEN, pygame.Rect(i * block_width, SCREEN_HEIGHT - j * block_height,
+                surface.fill(GREEN, pygame.Rect(x * block_width, SCREEN_HEIGHT - y * block_height,
                                                 block_width, block_height))
             elif square == '2':
-                surface.fill(GREEN, pygame.Rect(i * block_width, SCREEN_HEIGHT - j * block_height,
+                surface.fill(GREEN, pygame.Rect(x * block_width, SCREEN_HEIGHT - y * block_height,
                                                 block_width, block_height))
 
 
