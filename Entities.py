@@ -110,10 +110,20 @@ class AI(Agent):
 
         self._direction = move
 
+        self.__write_q_table_file()
+
         return super(AI, self).move(game_board)
 
     def __reward(self, game_board):
-        return 1
+        my_pieces = 0
+        enemy_pieces = 0
+        for row in game_board:
+            for x in row:
+                if x == self._identifier:
+                    my_pieces += 1
+                elif x not in [' ', '+']:
+                    enemy_pieces += 1
+        return my_pieces - enemy_pieces
 
     def __value(self, state):
         return max(self.__q_value(state, action) for action in self.__legal_moves)
@@ -121,5 +131,7 @@ class AI(Agent):
     def __q_value(self, state, action):
         return self.__q_table.get(state, Counter())[action]
 
-
+    def __write_q_table_file(self):
+        with open(self.__q_table_file_name, 'wb') as file:
+            pickle.dump(self.__q_table, file)
 
