@@ -39,6 +39,8 @@ class Agent(Entity):
             return 'lose' + self._identifier
         if game_board[new_head[0]][new_head[1]] != '+':
             self._positions.pop(0)
+        if game_board[new_head[0]][new_head[1]] in ['1', '2'] and new_head != self._positions[0]:
+            return 'lose'
 
 
 class Player(Agent):
@@ -65,3 +67,5 @@ class Player(Agent):
 class AI(Agent):
     def __init__(self, identifier, positions):
         super().__init__(identifier, positions)
+
+
