@@ -11,7 +11,7 @@ class Entity:
 
 class Apple(Entity):
     def __init__(self, position: list[int]):
-        super().__init__(self, position)
+        super().__init__(position)
 
 
 class Agent(Entity):
