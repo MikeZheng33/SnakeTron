@@ -23,28 +23,7 @@ class Agent(Entity):
         self._direction = 'right'
 
     def move(self, game_board) -> str:
-        pass
-
-
-class Player(Agent):
-    def __init__(self, identifier, positions):
-        super().__init__(identifier, positions)
-
-    def move(self, game_board):
-        keys = pygame.key.get_pressed()
         head = self._positions[-1]
-
-        if self._direction in ['left', 'right']:
-            if keys[K_w]:
-                self._direction = 'up'
-            elif keys[K_s]:
-                self._direction = 'down'
-        else:
-            if keys[K_a]:
-                self._direction = 'left'
-            elif keys[K_d]:
-                self._direction = 'right'
-
         new_head = head
         if self._direction == "up":
             new_head = head[0], head[1] + 1
@@ -57,9 +36,30 @@ class Player(Agent):
 
         self._positions.append(new_head)
         if new_head[0] < 0 or new_head[0] >= len(game_board) or new_head[1] < 0 or new_head[1] >= len(game_board[0]):
-            return 'lose'
+            return 'lose' + self._identifier
         if game_board[new_head[0]][new_head[1]] != '+':
             self._positions.pop(0)
+
+
+class Player(Agent):
+    def __init__(self, identifier, positions):
+        super().__init__(identifier, positions)
+
+    def move(self, game_board):
+        keys = pygame.key.get_pressed()
+
+        if self._direction in ['left', 'right']:
+            if keys[K_w]:
+                self._direction = 'up'
+            elif keys[K_s]:
+                self._direction = 'down'
+        else:
+            if keys[K_a]:
+                self._direction = 'left'
+            elif keys[K_d]:
+                self._direction = 'right'
+
+        return super().move(game_board)
 
 
 class AI(Agent):

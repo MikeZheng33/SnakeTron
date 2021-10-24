@@ -33,6 +33,7 @@ def main():
     player_pos = random_position()
     entities.append(Player('1', [player_pos]))
     game_board[player_pos[0]][player_pos[1]] = '1'
+    frame_count: int = 0
 
     while True:
         for event in pygame.event.get():
@@ -58,7 +59,7 @@ def main():
         draw_board(surface, game_board)
 
         pygame.display.flip()
-        clock.tick(1)
+        clock.tick(5)
 
 
 def random_position(range_x=None, range_y=None) -> tuple[int, int]:
