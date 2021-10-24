@@ -17,16 +17,12 @@ class Entity:
         self._positions = value
 
 
-class Apple(Entity):
-    def __init__(self, positions):
-        super().__init__('+', positions)
-
-
 class Agent(Entity):
     def __init__(self, identifier: str, positions):
         super().__init__(identifier, positions)
+        self._direction = 'right'
 
-    def move(self, game_board):
+    def move(self, game_board) -> str:
         pass
 
 
@@ -37,17 +33,31 @@ class Player(Agent):
     def move(self, game_board):
         keys = pygame.key.get_pressed()
         head = self._positions[-1]
-        if keys[K_w]:
-            self._positions.append((head[0], head[1] + 1))
-            self._positions.pop(0)
-        elif keys[K_a]:
-            self._positions.append((head[0] - 1, head[1]))
-            self._positions.pop(0)
-        elif keys[K_s]:
-            self._positions.append((head[0], head[1] - 1))
-            self._positions.pop(0)
-        elif keys[K_d]:
-            self._positions.append((head[0] + 1, head[1]))
+
+        if self._direction in ['left', 'right']:
+            if keys[K_w]:
+                self._direction = 'up'
+            elif keys[K_s]:
+                self._direction = 'down'
+        else:
+            if keys[K_a]:
+                self._direction = 'left'
+            elif keys[K_d]:
+                self._direction = 'right'
+
+        new_head = head
+        match self._direction:
+            case 'up':
+                new_head = head[0], head[1] + 1
+            case 'left':
+                new_head = head[0] - 1, head[1]
+            case 'down':
+                new_head = head[0], head[1] - 1
+            case 'right':
+                new_head = head[0] + 1, head[1]
+
+        self._positions.append(new_head)
+        if game_board[new_head[0]][new_head[1]] != '+':
             self._positions.pop(0)
 
 
