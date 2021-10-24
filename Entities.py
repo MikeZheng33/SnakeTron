@@ -46,15 +46,14 @@ class Player(Agent):
                 self._direction = 'right'
 
         new_head = head
-        match self._direction:
-            case 'up':
-                new_head = head[0], head[1] + 1
-            case 'left':
-                new_head = head[0] - 1, head[1]
-            case 'down':
-                new_head = head[0], head[1] - 1
-            case 'right':
-                new_head = head[0] + 1, head[1]
+        if self._direction == "up":
+            new_head = head[0], head[1] + 1
+        elif self._direction == "left":
+            new_head = head[0] - 1, head[1]
+        elif self._direction == "down":
+            new_head = head[0], head[1] - 1
+        elif self._direction == "right":
+            new_head = head[0] + 1, head[1]
 
         self._positions.append(new_head)
         if game_board[new_head[0]][new_head[1]] != '+':
